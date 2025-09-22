@@ -14,13 +14,13 @@ def divide(a, b):
         raise ValueError("На ноль делить нельзя!")
     return a / b
 if __name__ == "__main__":
-    # Extended test
+
     print("Тестирование калькулятора:")
     print(f"2 + 3 = {add(2, 3)}")
     print(f"5 - 2 = {subtract(5, 2)}")
     print(f"4 * 3 = {multiply(4, 3)}")
     try:
         print(f"10 / 2 = {divide(10, 2)}")
-        print(f"5 / 0 = {divide(5, 0)}")  # This will cause an error
+        print(f"5 / 0 = {divide(5, 0)}")
     except ValueError as e:
         print(f"Error: {e}")
