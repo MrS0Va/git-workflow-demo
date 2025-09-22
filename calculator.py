@@ -1,4 +1,5 @@
 def add(a, b):
+    #Складывает два числа и возвращает результат
     print(f"Adding {a} and {b}")
     return a + b
 
@@ -8,6 +9,10 @@ def subtract(a, b):
 def multiply(a, b):
     #Возвращает произведение двух чисел
     return a * b
+
+def power(base, exponent):
+    #Возвращает число возведенное в степень
+    return base ** exponent
 
 def divide(a, b):
 
