@@ -1,5 +1,6 @@
 def add(a, b):
     #Складывает два числа и возвращает результат
+    print(f"Adding {a} and {b}")
     return a + b
 
 def subtract(a, b):
