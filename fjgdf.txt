@@ -1,0 +1,91 @@
+<StackPanel Margin="15">
+       <Label Content="Длина пароля:" FontWeight="Bold"/>
+       <TextBox x:Name="txtLength" Text="12" Margin="0,2,0,10"/>
+ 
+       <Label Content="Количество цифр:" FontWeight="Bold"/>
+       <TextBox x:Name="txtDigits" Text="4" Margin="0,2,0,10"/>
+ 
+       <Label Content="Количество спец. символов:" FontWeight="Bold"/>
+       <TextBox x:Name="txtSpecials" Text="2" Margin="0,2,0,15"/>
+ 
+       <Button x:Name="btnGenerate" Content="Создать пароли"
+               Height="35" FontSize="14" Click="BtnGenerate_Click"
+               Margin="0,5,0,15"/>
+ 
+       <Label Content="Результат:" FontWeight="Bold"/>
+       <ListBox x:Name="lstPasswords" Height="150"
+                FontFamily="Consolas" FontSize="14"
+                SelectionMode="Single"/>
+   </StackPanel>
+ 
+ 
+ 
+ 
+public partial class MainWindow : Window
+{
+   // Символы для генерации
+   private const string Letters = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ";
+   private const string Digits = "0123456789";
+   private const string Specials = "!@#$%^&*()_+-=[]{}|;:,.<>?";
+ 
+   // Один экземпляр Random на всё приложение (избегаем повторных сидов)
+   private static readonly Random _rng = new Random();
+ 
+   public MainWindow()
+   {
+       InitializeComponent();
+   }
+ 
+   private void BtnGenerate_Click(object sender, RoutedEventArgs e)
+   {
+       // 1. Чтение и валидация входных данных
+       if (!int.TryParse(txtLength.Text, out int length) ||
+           !int.TryParse(txtDigits.Text, out int digitCount) ||
+           !int.TryParse(txtSpecials.Text, out int specialCount))
+       {
+           MessageBox.Show("Все поля должны содержать целые числа.", "Ошибка ввода", MessageBoxButton.OK, MessageBoxImage.Warning);
+           return;
+       }
+ 
+       if (length < digitCount + specialCount)
+       {
+           MessageBox.Show("Длина пароля не может быть меньше суммы цифр и спецсимволов.", "Ошибка", MessageBoxButton.OK, MessageBoxImage.Warning);
+           return;
+       }
+ 
+       int letterCount = length - digitCount - specialCount;
+ 
+       // 2. Генерация списка паролей (например, 5 штук за клик)
+       lstPasswords.Items.Clear();
+       for (int i = 0; i < 5; i++)
+       {
+           lstPasswords.Items.Add(GeneratePassword(length, digitCount, specialCount, letterCount));
+       }
+   }
+ 
+   private string GeneratePassword(int length, int digits, int specials, int letters)
+   {
+       char[] pwd = new char[length];
+ 
+       // Заполняем обязательные символы
+       for (int i = 0; i < digits; i++)
+           pwd[i] = Digits[_rng.Next(Digits.Length)];
+ 
+       for (int i = 0; i < specials; i++)
+           pwd[digits + i] = Specials[_rng.Next(Specials.Length)];
+ 
+       for (int i = 0; i < letters; i++)
+           pwd[digits + specials + i] = Letters[_rng.Next(Letters.Length)];
+ 
+       // Перемешиваем массив (алгоритм Фишера-Йетса)
+       for (int i = pwd.Length - 1; i > 0; i--)
+       {
+           int j = _rng.Next(i + 1);
+           char temp = pwd[i];
+           pwd[i] = pwd[j];
+           pwd[j] = temp;
+       }
+ 
+       return new string(pwd);
+   }
+}
